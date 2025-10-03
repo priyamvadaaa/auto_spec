@@ -1,4 +1,4 @@
-name: Specify User Story Workflow
+name: Flask API CI
 
 on:
   push:
@@ -9,18 +9,24 @@ on:
       - main
 
 jobs:
-  specify:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          node-version: "18"
+          python-version: "3.11"
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
 
-      - name: Run Specify check
-        run: npx specify check
+      - name: Run Flask API tests
+        run: |
+          source venv/bin/activate
+          pytest
